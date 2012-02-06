@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+    
+<!-- ================================================================== -->
+<!--         org.eclipse.ui.examples.readmetool.IReadmeFileParser       -->
+<!-- Extension Implementation: must implement                           -->
+<!--          the file's section and subsection structure               -->
+<!-- Purpose: Provide a custom parser for Readme files which determines -->
+<!-- Extension point: org.eclipse.ui.examples.readmetool.sectionParser  -->
+<!-- ================================================================== -->
+   <extension-point id="sectionParser" name="%ExtPoint.sectionParser"/>
+
+   <extension
+         point="org.thenesis.emulation.eclipse.sectionParser">
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.thenesis.emulation.eclipse.system.actionset1"
+            label="System"
+            visible="true">
+         <action
+               class="org.thenesis.emulation.eclipse.system.ResumeAction"
+               disabledIcon="icons/dlcl16/resume.gif"
+               enablesFor="!"
+               icon="icons/elcl16/resume.gif"
+               id="org.thenesis.emulation.eclipse.system.ResumeAction"
+               label="Resume"
+               style="push"
+               toolbarPath="system"
+               tooltip="Resume emulation">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.system.PauseAction"
+               disabledIcon="icons/dlcl16/suspend.gif"
+               enablesFor="!"
+               icon="icons/elcl16/suspend.gif"
+               id="org.thenesis.emulation.eclipse.system.PauseAction"
+               label="Pause"
+               style="push"
+               toolbarPath="system"
+               tooltip="Pause emulation">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Emulation"
+            id="org.thenesis.emulation.eclipse">
+      </category>
+      <view
+            allowMultiple="true"
+            category="org.thenesis.emulation.eclipse"
+            class="org.thenesis.emulation.eclipse.gameboy.VideoView"
+            id="org.thenesis.emulation.eclipse.gameboy.ScreenView"
+            name="Screen"/>
+            
+            <view
+                  allowMultiple="true"
+                  category="org.thenesis.emulation.eclipse"
+                  class="org.thenesis.emulation.eclipse.gameboy.DisassemblerView"
+                  id="org.thenesis.emulation.eclipse.gameboy.DisassemblerView"
+                  name="Disassembler"/>
+      <view
+            allowMultiple="true"
+            category="org.thenesis.emulation.eclipse"
+            class="org.thenesis.emulation.eclipse.gameboy.MemoryView"
+            id="org.thenesis.emulation.eclipse.gameboy.MemoryView"
+            name="Memory"/>
+      <view
+            allowMultiple="true"
+            category="org.thenesis.emulation.eclipse"
+            class="org.thenesis.emulation.eclipse.gameboy.CPUView"
+            id="org.thenesis.emulation.eclipse.gameboy.CPUView"
+            name="CPU"/>
+      <view
+            allowMultiple="true"
+            category="org.thenesis.emulation.eclipse"
+            class="org.thenesis.emulation.eclipse.gameboy.CartridgeView"
+            id="org.thenesis.emulation.eclipse.gameboy.CartridgeView"
+            name="Cartridge"/>
+      <view
+            allowMultiple="true"
+            category="org.thenesis.emulation.eclipse"
+            class="org.thenesis.emulation.eclipse.gameboy.HardwareView"
+            id="org.thenesis.emulation.eclipse.gameboy.HardwareView"
+            name="Hardware">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.thenesis.emulation.eclipse.gameboy.DisassemblerActions"
+            targetID="org.thenesis.emulation.eclipse.gameboy.DisassemblerView">
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.StepOutInterruptAction"
+               disabledIcon="icons/dlcl16/step_out_interrupt.gif"
+               enablesFor="!"
+               icon="icons/elcl16/step_out_interrupt.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.StepOutInterruptAction"
+               label="Step out interrupt"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Step out interrupt">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.StepIntoInterruptAction"
+               disabledIcon="icons/dlcl16/step_into_interrupt.gif"
+               enablesFor="!"
+               icon="icons/elcl16/step_into_interrupt.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.StepIntoInterruptAction"
+               label="Step into interrupt"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Step into interrupt">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.TraceInterruptAction"
+               disabledIcon="icons/dlcl16/trace_interrupt.gif"
+               enablesFor="!"
+               icon="icons/elcl16/trace_interrupt.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.TraceInterruptAction"
+               label="Trace interrupt"
+               style="toggle"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Trace interrupt">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.StepOverAction"
+               disabledIcon="icons/dlcl16/step_over.gif"
+               enablesFor="!"
+               icon="icons/elcl16/step_over.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.StepOverAction"
+               label="Step over"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Step over">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.StepOutAction"
+               disabledIcon="icons/dlcl16/step_out.gif"
+               enablesFor="!"
+               icon="icons/elcl16/step_out.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.StepOutAction"
+               label="Step out"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Step out">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.StepIntoAction"
+               disabledIcon="icons/dlcl16/step_into.gif"
+               enablesFor="!"
+               icon="icons/elcl16/step_into.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.StepIntoAction"
+               label="Step into"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy"
+               tooltip="Step into">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.DisassemblerFollowPCAction"
+               disabledIcon="icons/dlcl16/follow_pc.gif"
+               enablesFor="!"
+               icon="icons/elcl16/follow_pc.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.DisassemblerFollowPCAction"
+               label="Follow PC"
+               state="true"
+               style="toggle"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.DisassemblerToolbar"
+               tooltip="If enabled, the view will follow the PC">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.DisassemblerGoToPCAction"
+               disabledIcon="icons/dlcl16/goto_pc.gif"
+               enablesFor="!"
+               icon="icons/elcl16/goto_pc.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.DisassemblerGoToPCAction"
+               label="Go to PC"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.DisassemblerToolbar"
+               tooltip="Go to PC address">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.DisassemblerAutoRefreshAction"
+               disabledIcon="icons/dlcl16/auto_refresh.gif"
+               enablesFor="!"
+               icon="icons/elcl16/auto_refresh.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.DisassemblerAutoRefreshAction"
+               label="Auto refresh"
+               style="toggle"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.DisassemblerToolbar"
+               tooltip="Auto refresh">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.DisassemblerRefreshAction"
+               disabledIcon="icons/dlcl16/refresh.gif"
+               enablesFor="!"
+               icon="icons/elcl16/refresh.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.DisassemblerRefreshAction"
+               label="Refresh"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.DisassemblerToolbar"
+               tooltip="Refresh">
+         </action>
+      </viewContribution>
+      <viewContribution
+            id="org.thenesis.emulation.eclipse.gameboy.MemoryActions"
+            targetID="org.thenesis.emulation.eclipse.gameboy.MemoryView">
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.MemoryAutoRefreshAction"
+               disabledIcon="icons/dlcl16/auto_refresh.gif"
+               enablesFor="!"
+               icon="icons/elcl16/auto_refresh.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.MemoryAutoRefreshAction"
+               label="Auto refresh"
+               style="toggle"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.MemoryToolbar"
+               tooltip="Auto refresh">
+         </action>
+         <action
+               class="org.thenesis.emulation.eclipse.gameboy.MemoryRefreshAction"
+               disabledIcon="icons/dlcl16/refresh.gif"
+               enablesFor="!"
+               icon="icons/elcl16/refresh.gif"
+               id="org.thenesis.emulation.eclipse.gameboy.MemoryRefreshAction"
+               label="Refresh"
+               style="push"
+               toolbarPath="org.thenesis.emulation.eclipse.gameboy.MemoryToolbar"
+               tooltip="Refresh">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="HelpContexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.dropActions">
+   </extension>
+   <extension
+         id="readmemarker"
+         name="%ReadmeMarker.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="org.thenesis.emulation.eclipse.id">
+      </attribute>
+      <attribute
+            name="org.thenesis.emulation.eclipse.level">
+      </attribute>
+      <attribute
+            name="org.thenesis.emulation.eclipse.department">
+      </attribute>
+      <attribute
+            name="org.thenesis.emulation.eclipse.code">
+      </attribute>
+      <attribute
+            name="org.thenesis.emulation.eclipse.language">
+      </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerHelp">
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example1_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.id"
+               value="1234">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example2_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.level"
+               value="7">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example3_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.level"
+               value="7">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.department"
+               value="infra">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example4_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.code"
+               value="red">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example5_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.language"
+               value="english">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example6_context">
+         <attribute
+               name="org.thenesis.emulation.eclipse.id"
+               value="1234">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.level"
+               value="7">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.department"
+               value="infra">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.code"
+               value="red">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.language"
+               value="english">
+         </attribute>
+      </markerHelp>
+      <markerHelp
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            helpContextId="org.thenesis.emulation.eclipse.marker_example7_context">
+      </markerHelp>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            class="org.thenesis.emulation.eclipse.ReadmeMarkerResolutionGenerator">
+         <attribute
+               name="org.thenesis.emulation.eclipse.id"
+               value="1234">
+         </attribute>
+      </markerResolutionGenerator>
+      <markerResolutionGenerator
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            class="org.thenesis.emulation.eclipse.ReadmeMarkerResolutionGenerator">
+         <attribute
+               name="org.thenesis.emulation.eclipse.level"
+               value="7">
+         </attribute>
+      </markerResolutionGenerator>
+      <markerResolutionGenerator
+            markerType="org.thenesis.emulation.eclipse.readmemarker"
+            class="org.thenesis.emulation.eclipse.ReadmeMarkerResolutionGenerator">
+         <attribute
+               name="org.thenesis.emulation.eclipse.code"
+               value="red">
+         </attribute>
+         <attribute
+               name="org.thenesis.emulation.eclipse.language"
+               value="english">
+         </attribute>
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.thenesis.emulation.eclipse.ReadmePreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.menus">
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.thenesis.emulation.eclipse.gameboy.GameBoyPerspectiveFactory"
+            icon="icons/elcl16/game_boy_debug.gif"
+            id="org.thenesis.emulation.eclipse.gameboy.GameBoyPerspective"
+            name="Game Boy debugger"/>
+   </extension>
+
+
+</plugin>

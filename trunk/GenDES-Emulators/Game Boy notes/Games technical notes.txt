@@ -1,0 +1,116 @@
+********************************************************************************
+Technical notes.
+********************************************************************************
+
+--------------------------------------------------------------------------------
+Features not currently emulated:
+*SGB features.
+*Timer of MBC3.
+*Rumble feature of MBC5.
+*MBC7.
+*HUC1 MBC.
+*HUC3 MBC.
+*Real sprite priority in non-color mode.
+*Sub-scanline graphics. This is only used in the "Mental Respiration
+Demo" (per tile X scroll position (SCX) change).
+*Serial connection.
+*Infrared connection.
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+*Name:
+HALT/DI CPU bug.
+
+*Description:
+
+*Concerned cartridges:
+-"Killer Instinct (U) [S][!].gb"
+-"Thunderbirds (J).gb"
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+*Name:
+STAT write bug in a non-color Game Boy models.
+
+*Description:
+When writing any value in the STAT register during the HBLANK or VBLANK period,
+the LCDC interrupt is raised. This only apply to non-color Game Boy models. So
+it is a compatibility issue of the GBC and because of this some non-color games
+do not work with the GBC.
+
+*Concerned cartridges:
+-"Legend of Zerd, The (J).gb" (does not work with a Game Boy Color).
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+*Name: 
+HDMA can be started in software.
+
+*Description:
+The HDMA is started in software.
+
+*Concerned cartridges:
+-"Ready 2 Rumble Boxing (U) [C][!].gbc" (in game)
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+*Name:
+VBLANK synchronization issue.
+
+*Description:
+At several places, the games use the following loop while the VBLANK interrupt
+is enabled:
+
+loop:
+	ld	a,($ff00+40)
+	cmp	a,$90
+	jr	nz,loop
+
+It waits for the beginning of the VBLANK period. But it is nasty because the
+VBLANK interrupt may start just before the "ld a,($ff00+40)" so that the value of 'a'
+is never read as $90.
+Though, this works in reality because sometimes the instruction
+"ld a,($ff00+40)" is executed after LY becomes $90 but before the VBLANK
+interrupt.
+
+*Solution:
+We place a small delay (10-40 cycles) between the moment where LY reaches $90 and the VBLANK interrupt.
+We don't known if this delay really exists in hardware but it surely does.
+
+In the Nintendo patent US6672963B1 which presents a Game Boy emulator, in the sheet 14 which shows
+the figure 9C ("Example state machine parameters"), the VBLANK period is described as using
+"HBLANK+OAM+TRANSFER" cycles for the DMG model and "HBLANK+OAM+TRANSFER-30" cycles for the GBC model.
+This means maybe that:
+-the delay effectively exists
+-it uses 2*30 cycles at 4 Mhz (because it is specified in instruction cycles, not in clock cycles, and at 8 Mhz).
+-it only exists with GBC model
+
+*Concerned cartridges:
+-"Robocop 2 (U).gb" (in intro)
+-"Warriors of Might and Magic (U) [C][!].gbc" (in several places)
+-"Wizards & Warriors Chapter X - The Fortress of Fear (UE) [!].gb" (at startup)
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+*Name:
+LY counter goes directly from $98 to $00.
+
+*Description:
+The LY counter goes directly from $98 to $00. It does not count through $99 (or only very transiently).
+So there is 2 lines where LY is equal to $00: the last line of the VBLANK
+period and the first line of display.
+Furthermore, when LYC=$00, the LY=LYC interrupt is only generated at the
+beginning of the last line of the VBLANK period. It is not generated for the
+first line of display.
+
+*Solution:
+The LY behaviour is implemented as descripted.
+
+*Concerned cartridges:
+-"Zen Intergalactic Ninja (U).gb" (in intro)
+--------------------------------------------------------------------------------

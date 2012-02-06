@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="GenDES-Emulators-AWT/jar/GameBoyEmulatorApplet.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/GenDES-Emulators-AWT/jar/GameBoyEmulatorApplet.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.gameboy.applet{GameBoyEmulatorApplet.java[GameBoyEmulatorApplet" manifestLocation="/GenDES-Emulators-AWT/jar/GameBoyEmulatorApplet.manifest" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="true">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.gameboy.applet"/>
+        <javaElement handleIdentifier="=GenDES-Emulators/src&lt;org.thenesis.gendes.cpu_gameboy"/>
+        <javaElement handleIdentifier="=GenDES-Core/src\/core"/>
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.contexts"/>
+        <javaElement handleIdentifier="=GenDES-Emulators/src&lt;org.thenesis.gendes.gameboy"/>
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt"/>
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.system"/>
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.gameboy"/>
+    </selectedElements>
+</jardesc>
