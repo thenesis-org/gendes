@@ -1,0 +1,2 @@
+*State save/restore not implemented.
+*Implement properties screen.

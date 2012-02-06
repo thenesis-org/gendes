@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+  @(#)package.html	1.00 17/09/2007
+
+  Copyright 2007 Guillaume & Mathieu Legris. All Rights Reserved.
+  
+-->
+</head>
+<body bgcolor="white">
+Contains the main emulation classes and some common utilities.
+<p>
+The class <code>EmulationSystem</code> manages the emulation.
+It controls the device tree, schedules all events and allows you to run emulation for a given amount of time.
+</p>
+<p>
+The class <code>EmulationDevice</code> represents a device that can run in an <code>EmulationSystem</code>.
+It must belong to an <code>EmulationSystem</code> to work.
+</p>
+<p>
+The class <code>EmulationEvent</code> specifies an event that can occur inside a given device.
+Events are dispatched by the <code>EmulationSystem</code> which the device belongs to.
+</p>
+<p>
+The class <code>EmulationClock</code> represents a special device representing a clock.
+Events can be attached to an <code>EmulationClock</code> instead of a <code>EmulationSystem</code> for cycle accurate emulation and easy management.
+</p>
+<p>
+The class <code>EmulationThread</code> allows to run an <code>EmulationSystem</code> in a separate thread.
+It allows also to control the speed of emulation and gives performance informations. 
+</p>
+<p>
+The class <code>EmulationTimer</code> provides a time base for the <code>EmulationThread</code>.
+The class <code>SystemMillisecondTimer</code> is a subclass of <code>EmulationTimer</code> which uses the method <code>System.currentTimeMillis()</code>.
+This is generally the class you will use but you can also implements a more accurate timer.
+Note that if you implement your own <code>EmulationTimer</code>, you should not use the method <code>System.nanoTime()</code> under Windows: it is very slow, eating a lot of CPU with just a few calls and causing jerky emulation.
+</p>
+<p>
+The class <code>EmulationState</code> contains the state of an <code>EmulationSystem</code>.
+</p>
+<p>
+The class <code>TimeStamp</code> is used to represents a given time during emulation. 
+</p>
+<p>
+The class <code>FastString</code> is used to quickly build strings. It is mainly used for debugging. 
+</p>
+<p>
+The class <code>Tools</code> contains some simple common tools.
+</p>
+
+<!--
+<h2>Package Specification</h2>
+##### FILL IN ANY SPECS NEEDED BY JAVA COMPATIBILITY KIT #####
+<ul>
+  <li><a href="">##### REFER TO ANY FRAMEMAKER SPECIFICATION HERE #####</a>
+</ul>
+-->
+
+<!--
+<h2>Related Documentation</h2>
+For overviews, tutorials, examples, guides, and tool documentation, please see:
+<ul>
+  <li><a href="">##### REFER TO NON-SPEC DOCUMENTATION HERE #####</a>
+</ul>
+-->
+
+<!-- Put @see and @since tags down here. -->
+
+</body>
+</html>

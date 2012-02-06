@@ -1,0 +1,4 @@
+-Add auto refresh to the memory view, the disassembler view and the hardware view. The refresh can be caused by an event.
+-Add event choice for auto refresh.
+-Add group size selection to the memory view.
+-Add search in memory editor

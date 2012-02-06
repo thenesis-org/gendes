@@ -1,0 +1,23 @@
+*Add more listeners for hardware events.
+*Move sub-devices in separate classes (internal classes of GameBoy).
+*Implement State save/restore.
+*Implement cheat searcher.
+*Implement access breakpoints.
+*Implement access map.
+*Audio:
+-Audio channel 1 lacks something (but it's not important). For example, in Super Mario Land, at the end of a
+level, the sound while counting remaining time is continuous whereas it should not: the sound is emitted
+every 2 timer interrupts (timer is set at 64 Hz initially but increase to ?? Hz when the time counter goes below 100,
+and to ?? Hz when the time counter goes below 50).
+-Emulation tends to be slighty faster than sound playing. This leads to periodic blocking of emulation.
+We must find a way to keep sound synchronized with emulation.
+This can be done by audio frequency adjustement rather than emulation speed adjustement.
+-Implement desactivation of channels individually.
+*Video:
+-Implement sprite priority for the original game boy mode.
+-Implement Sub-scanline modification of video registers.
+-Implement Tiles, maps and sprites dump.
+-Implemebt HDMA started by software.
+*Implement serial.
+*Implement infrared.
+*Implement MBC7 and MBC3.

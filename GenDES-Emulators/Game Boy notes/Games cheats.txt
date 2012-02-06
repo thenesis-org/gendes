@@ -1,0 +1,5 @@
+*Super Mario Land
+-Score: variable at C09F-C0A1
+-Time: variable at DA01-DA02
+-Lives: variable at DA15
+-Money: variable at FFFA

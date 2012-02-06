@@ -1,0 +1,40 @@
+*The servlet is used for:
+	-Creating an account.
+	-Removing an account.
+	-Give access to an account.
+	-Give a list of available platforms.
+	-Give a list of available backups for each platform.
+	-A list of connected players.
+	
+*An account contains:
+	-The name of the account.
+	-A password for accessing the account.
+	-A list of platforms.
+	-Each platform contains a list of favorite backups.
+	-Each backup can have an associated list of memory backups and an associated list of state backups.
+	-A list of contacts.
+	
+*A user owning an account can:
+	-Connect to an account.
+	-Retrieve and modify all informations contained in the account.
+	-Download and play a backup.
+	-Save/restore a state locally.
+	-Save/restore a state to/from the servlet.
+	-The name of a state can be set and changed.
+	-Retrieve the list of connected players.
+	-Filter the list of connected players.
+
+	
+Example of internal organization:
+accounts/
+	guillaume/
+		game_boy/
+			Tetrix_DX/
+				1.backup
+			Super_Mario_Land/
+				world_2.state
+				world_3.state
+	mathieu/
+		game_boy/
+		
+		lynx/

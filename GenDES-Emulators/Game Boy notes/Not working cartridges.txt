@@ -1,0 +1,91 @@
+********************************************************************************
+Not working games.
+********************************************************************************
+
+-"3D Pocket Pool (E) (M6) [C][!].gbc"
+*Flickering of sprites. But this due to the game which alternates between 2 images to simulate transparency for shadows.
+This could be solved by simulating remanence.
+
+-"4x4 World Trophy (E) (M5) [C][!].gbc"
+*Very slow during game. Probably due to bad video timings.
+
+-"Aladdin (E) (M6) [C][!].gbc"
+*Lock early in game. Does not happen when sound is desactivated in the game options.
+This is due to the video timings which are not 100% accurate.
+Since the game sound processing shift other processings, this explains why the problem does not happen when sound is disabled.
+
+-"Magical Drop (U) [C][!].gbc"
+*Intro does not work. According to GNUBOY, this is due to the fact that GDMA should consume CPU cycles.
+
+-"Mental Respiration demo.gbc"
+*Gin & Tronic problem (per tile SCX changes not implemented).
+
+
+
+********************************************************************************
+Fixed
+********************************************************************************
+
+-"Bitte 8 Bit Demo by HITMEN (PD) [C].gbc"
+*Horizontal rasters (first effect) move too slowly.
+FIXED: As LY=0 for the last VBLANK line and the first line of display,
+LY=LYC interrupt was generated 2 times.
+Now the interrupt is only generated for the first line (in VBLANK).
+
+-"Killer Instinct (U) [S][!].gb"
+*Flickering of the last line of display before status bar.
+FIXED: when IME=0 and no interrupt request is pending, the halt instruction effectively halt
+the CPU. The halt state is exited when an interrupt request occurs, even if IME=0. (But an interrupt
+request occurs only if IF&IE!=0, so if IE=0 the cpu is frozen.
+056d 76     halt
+
+-"Klax (U) [C][!].gbc"
+*Sound problem: noise during digitized sound replay with channel 3.
+FIXED: we forgot to recenter the sample around 0 when channel 3 was desactivated.
+
+-"Lawnmower Man, The (U) [!].gb"
+*Problem in intro (flickering).
+FIXED: don't know how but it was probably a VBLANK timing problem.
+
+-"Robocop (U) [!].gb"
+*Incorrect screen animation when starting a game.
+FIXED: the background palette is changed alternatively every line. It is normal every even lines and black every odd lines.
+But a race condition occurs because when the background palette is set to normal, this happens just after the beginning of the LCD transfer (LCD mode 3).
+As the emulator built the line at exactly the beginning of the line, this causes flicker.
+Now the drawing of the line is in the middle of the scanline.
+
+-"Super Mario Land.gb"
+*Crashes sometimes at the end of a level. Crashes always at the end of a world.
+This is due to a timer interrupt that occurs inside another timer interrupt.
+The current ROM page is changed inside this interrupt. When the second interrupt ends, it returns
+in a wrong ROM page causing the crash.
+FIXED: timer was not correctly implemented.
+
+-"Thunderbirds (J).gb"
+*Hangs before intro.
+FIXED: this game uses halt instruction bug. It executes an halt instruction while interrupts are disabled and an
+interrupt is pending (VBLANK):
+024F 76     halt
+0250 FAA1C0 ld   a,($C0A1)
+0253 A7     and  a,a
+0254 28F9   jr   Z,$024F
+Without the halt bug implemented, this code hangs the game. But in reality it is executed as:
+024F 76     halt
+0250 FAFAA1 ld   a,($A1FA)
+0252 C0		ret  NZ
+0253 A7     and  a,a
+0254 28F9   jr   Z,$024F
+
+-"Zen Intergalactic Ninja (U).gb"
+*Flickering of the last line of the big screen showing a guy when beginning a game, and only for the head, not the hand.
+The hand uses a sprite whereas the head uses the window which is switched using a LY=LYC interrupt.
+FIXED: this is because they do not wait HBLANK to change window registers. As the emulator draws a line at the beginning 
+of HBLANK, it happens sometimes that the registers have already been changed. We have moved the drawing of a line at the
+beginning of the scanline.
+CHANGED: now the drawing of the line is in the middle of the scanline (cf Robocop).
+
+-"Little Mermaid II Pinball Frenzy, The (U) (M5) [C][!].gbc"
+*Trashed graphics (maybe HDMA).
+-"Ready 2 Rumble Boxing (U) [C][!].gbc"
+*Graphics problem during a match. Sprites are scrambled.
+FIXED: HDMA can be started in software during HBLANK.
