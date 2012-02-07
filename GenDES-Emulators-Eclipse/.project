@@ -3,6 +3,9 @@
 	<name>GenDES-Emulators-Eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>GenDES-Core</project>
+		<project>GenDES-Emulators</project>
+		<project>GenDES-Emulators-AWT</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

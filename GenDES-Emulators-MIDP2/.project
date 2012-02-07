@@ -3,6 +3,8 @@
 	<name>GenDES-Emulators-MIDP2</name>
 	<comment></comment>
 	<projects>
+		<project>GenDES-Core</project>
+		<project>GenDES-Emulators</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

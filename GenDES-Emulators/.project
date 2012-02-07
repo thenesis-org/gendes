@@ -3,7 +3,7 @@
 	<name>GenDES-Emulators</name>
 	<comment></comment>
 	<projects>
-		<project>Emulation-core</project>
+		<project>GenDES-Core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
