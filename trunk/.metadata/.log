@@ -70,3 +70,27 @@ Command-line arguments:  -os win32 -ws win32 -arch x86 -data K:\Projects\GenDES
 
 !ENTRY org.eclipse.core.net 1 0 2012-02-07 13:58:39.681
 !MESSAGE System property https.proxyPort is not set but should be 3128.
+!SESSION 2012-02-10 13:53:27.282 -----------------------------------------------
+eclipse.buildId=M20110909-1335
+java.version=1.6.0_22
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=fr_FR
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:41.978
+!MESSAGE System property http.proxyHost is not set but should be pdc-net-proxy01.
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:42.008
+!MESSAGE System property http.proxyPort is not set but should be 3128.
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:42.010
+!MESSAGE System property https.proxyHost is not set but should be pdc-net-proxy01.
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:42.013
+!MESSAGE System property https.proxyPort is not set but should be 3128.
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:42.017
+!MESSAGE System property https.proxyHost is not set but should be pdc-net-proxy01.
+
+!ENTRY org.eclipse.core.net 1 0 2012-02-10 13:53:42.049
+!MESSAGE System property https.proxyPort is not set but should be 3128.
