@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbench progressCount="13" version="2.0">
 <workbenchAdvisor/>
-<window height="965" width="1045" x="447" y="33">
+<window height="965" maximized="true" width="1045" x="447" y="33">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -13,9 +13,11 @@
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="129" y="22"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="76" y="22"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="76" y="22"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="107" y="22"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="190" y="22"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
@@ -24,15 +26,24 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
 </folder>
 </info>
 </editorArea>
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameBoyEmulatorApplet.java" partName="GameBoyEmulatorApplet.java" path="K:/Projects/GenDES/GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java" title="GameBoyEmulatorApplet.java" tooltip="GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="17385" selectionTopPixel="5261"/>
+</editor>
 </editors>
 <views>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
-<columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="120" org.eclipse.ui.ide.resourceField="90" org.eclipse.ui.ide.severityAndDescriptionField="266"/>
+<expanded>
+<category IMemento.internal.id="Errors"/>
+</expanded>
+<columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="236" org.eclipse.ui.ide.resourceField="139" org.eclipse.ui.ide.severityAndDescriptionField="266"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
@@ -75,7 +86,7 @@
 <view id="org.eclipse.jdt.ui.SourceView" partName="Declaration"/>
 <view id="org.eclipse.jdt.ui.JavadocView" partName="Javadoc"/>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="org.eclipse.jdt.ui.CompilationUnitEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.jdt.internal.ui.JavaPerspectiveFactory" id="org.eclipse.jdt.ui.JavaPerspective" label="Java"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -153,7 +164,7 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.26467663" ratioLeft="266" ratioRight="739" relationship="2" relative="left"/>
+<info part="org.eclipse.ui.editorss" ratio="0.33988214" ratioLeft="346" ratioRight="672" relationship="2" relative="left"/>
 <info folder="true" part="bottom" ratio="0.7496136" ratioLeft="485" ratioRight="162" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ProblemView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
@@ -185,7 +196,23 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java"/>
+</editors>
+<item historyLabel="GameBoyEmulatorApplet.java" index="0">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="GameBoyEmulatorApplet.java" index="0">
+<position info="not_deleted" x="11551" y="0"/>
+</item>
+<item historyLabel="GameBoyEmulatorApplet.java" index="0">
+<position info="not_deleted" x="11669" y="0"/>
+</item>
+<item active="true" historyLabel="GameBoyEmulatorApplet.java" index="0">
+<position info="not_deleted" x="11550" y="0"/>
+</item>
+</navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
@@ -201,5 +228,9 @@
 </trimArea>
 </trimLayout>
 </window>
-<mruList/>
+<mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameBoyEmulatorApplet.java" tooltip="GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java">
+<persistable path="/GenDES-Emulators-AWT/src/org/thenesis/gendes/awt/gameboy/applet/GameBoyEmulatorApplet.java"/>
+</file>
+</mruList>
 </workbench>

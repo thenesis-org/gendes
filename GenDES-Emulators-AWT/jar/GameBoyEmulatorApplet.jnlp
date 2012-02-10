@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="" href="">
+    <information>
+        <title>Game Boy Emulator</title>
+        <vendor>Thenesis</vendor>
+        <offline-allowed/>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+" href=
+           "http://java.sun.com/products/autodl/j2se"/>
+        <jar href="http://sites.google.com/site/thenesisgendes/game-boy-emulator/GameBoyEmulatorApplet.jar"
+            main="true" />
+
+    </resources>
+    <application-desc
+         name="Game Boy Emulator"
+         main-class="org.thenesis.gendes.awt.gameboy.applet.GameBoyEmulatorApplet"
+         width="360"
+         height="564">
+     </application-desc>
+     <update check="background"/>
+</jnlp>
