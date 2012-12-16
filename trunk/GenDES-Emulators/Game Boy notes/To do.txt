@@ -6,12 +6,12 @@
 *Implement access map.
 *Audio:
 -Audio channel 1 lacks something (but it's not important). For example, in Super Mario Land, at the end of a
-level, the sound while counting remaining time is continuous whereas it should not: the sound is emitted
-every 2 timer interrupts (timer is set at 64 Hz initially but increase to ?? Hz when the time counter goes below 100,
-and to ?? Hz when the time counter goes below 50).
+ level, the sound while counting remaining time is continuous whereas it should not: the sound is emitted
+ every 2 timer interrupts (timer is set at 64 Hz initially but increase to ?? Hz when the time counter goes below 100,
+ and to ?? Hz when the time counter goes below 50).
 -Emulation tends to be slighty faster than sound playing. This leads to periodic blocking of emulation.
-We must find a way to keep sound synchronized with emulation.
-This can be done by audio frequency adjustement rather than emulation speed adjustement.
+ We must find a way to keep sound synchronized with emulation.
+ This can be done by audio frequency adjustement rather than emulation speed adjustement.
 -Implement desactivation of channels individually.
 *Video:
 -Implement sprite priority for the original game boy mode.
@@ -21,3 +21,6 @@ This can be done by audio frequency adjustement rather than emulation speed adju
 *Implement serial.
 *Implement infrared.
 *Implement MBC7 and MBC3.
+
+*!There is a race condition when running the emulator before powering on the Game Boy. In this case, the clock event is added
+ !before the current time leading to a nearly infinite loop.

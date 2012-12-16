@@ -26,7 +26,7 @@ public class GameBoyMenu extends Menu {
     };
     
     private ContextEventListener onResetListener=new ContextEventListener() {
-        public void processEvent(ContextEvent ce) { updatePowerMenu(); }
+        public void processEvent(ContextEvent ce) { globalMenuUpdate(); }
     };
     
     private Frame frame;
@@ -38,6 +38,7 @@ public class GameBoyMenu extends Menu {
     private MyCheckboxMenu globalMenuModelMenu=new MyCheckboxMenu("Game Boy model") {
         public void onItemChanged(MyCheckboxMenuItem lastItem, MyCheckboxMenuItem newItem) {
             gameBoyContext.setModel(newItem.userValue);
+            globalMenuUpdate();
         }        
     };
     private MyCheckboxMenuItem globalMenuModelMenuItems[]={
@@ -49,41 +50,65 @@ public class GameBoyMenu extends Menu {
     };
     private MyMenuItem globalMenuPowerOnItem=new MyMenuItem("Power ON") {
         protected void processActionEvent(ActionEvent e) {
-            synchronized(systemContext.emulationSystem) { gameBoyContext.switchPower(true); }
+            synchronized(systemContext.emulationSystem) {
+            	gameBoyContext.switchPower(true);
+            	globalMenuUpdate();
+            }
         }
     };
     private MyMenuItem globalMenuPowerOffItem=new MyMenuItem("Power OFF") {
         protected void processActionEvent(ActionEvent e) {
-            synchronized(systemContext.emulationSystem) { gameBoyContext.switchPower(false); }
+            synchronized(systemContext.emulationSystem) {
+            	gameBoyContext.switchPower(false);
+            	globalMenuUpdate();
+            }
         }       
     };
     private MyMenuItem globalMenuResetItem=new MyMenuItem("Reset") {
-        protected void processActionEvent(ActionEvent e) { gameBoyContext.reset(); }        
+        protected void processActionEvent(ActionEvent e) {
+        	gameBoyContext.reset();
+        	globalMenuUpdate();
+        }        
     };
-    
+
+    private void globalMenuUpdate() {
+        globalMenuModelMenu.setCurrentItemByValue(gameBoyContext.gameBoy.getModel());
+        
+        boolean f=gameBoyContext.gameBoy.isPowered();
+        globalMenuPowerOnItem.setEnabled(!f);
+        globalMenuPowerOffItem.setEnabled(f);
+        globalMenuResetItem.setEnabled(f);        
+    }
+
     //------------------------------------------------------------------------------
     // Cartridge.
     //------------------------------------------------------------------------------
     private Menu cartridgeMenu=new Menu("Cartridge");
-    private MyMenuItem cartridgeMenuInsertItem=new MyMenuItem("Insert cartridge") {
+	private MyMenuItem cartridgeMenuInsertItem =new MyMenuItem("Insert cartridge") {
         protected void processActionEvent(ActionEvent e) {
             FileDialog fileDialog=new FileDialog(frame, "Load Game Boy cartridge", FileDialog.LOAD);
             cartridgeSelect(fileDialog);
+            cartridgeMenuUpdate();
         }        
     };
     private MyMenuItem cartridgeMenuRemoveItem=new MyMenuItem("Remove cartridge") {
         protected void processActionEvent(ActionEvent e) {
             gameBoyContext.cartridgeRemove();
-            setEnabled(gameBoyContext.gameBoy.isCartridgeInserted());
+            cartridgeMenuUpdate();
         }                
     };
     private MyCheckboxMenuItem cartridgeMenuAutoRunItem=new MyCheckboxMenuItem("Auto run on insertion") {
         protected void processItemEvent(ItemEvent e) {
             gameBoyContext.cartridgeAutoRunFlag=!gameBoyContext.cartridgeAutoRunFlag;
-            setState(gameBoyContext.cartridgeAutoRunFlag);
+            cartridgeMenuUpdate();
         }
     };
     
+    private void cartridgeMenuUpdate() {
+        cartridgeMenuRemoveItem.setEnabled(gameBoyContext.gameBoy.isCartridgeInserted());
+        cartridgeMenuAutoRunItem.setState(gameBoyContext.cartridgeAutoRunFlag);
+    }
+
     private void cartridgeSelect(FileDialog fileDialog) {
         fileDialog.setModal(true);
         fileDialog.setVisible(true);
@@ -96,7 +121,7 @@ public class GameBoyMenu extends Menu {
         	}
         }
     }
-    
+
     //------------------------------------------------------------------------------
     // Video.
     //------------------------------------------------------------------------------
@@ -104,42 +129,51 @@ public class GameBoyMenu extends Menu {
     private MyCheckboxMenuItem videoMenuGenerationItem=new MyCheckboxMenuItem("Activate video generation") {
         protected void processItemEvent(ItemEvent e) {
             gameBoyContext.videoGenerationEnabled=!gameBoyContext.videoGenerationEnabled;
-            setState(gameBoyContext.videoGenerationEnabled);
+            videoMenuUpdate();
         }        
     };
     private MyCheckboxMenuItem videoMenuPresentationItem=new MyCheckboxMenuItem("Activate video presentation") {
         protected void processItemEvent(ItemEvent e) {
             gameBoyContext.videoPresentationEnabled=!gameBoyContext.videoPresentationEnabled;
-            setState(gameBoyContext.videoPresentationEnabled);
+            videoMenuUpdate();
         }        
     };
     private MyCheckboxMenuItem videoMenuAutoFrameSkipModeItem=new MyCheckboxMenuItem("Auto frame skip mode") {
         protected void processItemEvent(ItemEvent e) {
             gameBoyContext.videoFrameSkipAutoModeEnabled=!gameBoyContext.videoFrameSkipAutoModeEnabled;
-            setState(gameBoyContext.videoFrameSkipAutoModeEnabled);
+            videoMenuUpdate();
         }        
     };
     private static final int NB_FRAME_SKIP_VALUES=  8;
     private MyCheckboxMenu videoMenuFrameSkipMenu=new MyCheckboxMenu("Frame skip") {
         public void onItemChanged(MyCheckboxMenuItem lastItem, MyCheckboxMenuItem newItem) {
             gameBoyContext.videoFrameSkip=newItem.userValue;
+            videoMenuUpdate();
         }        
     };
     private MyCheckboxMenuItem videoMenuFrameSkipMenuItems[]=new MyCheckboxMenuItem[NB_FRAME_SKIP_VALUES];
 
+    private void videoMenuUpdate() {
+        videoMenuGenerationItem.setState(gameBoyContext.videoGenerationEnabled);
+        videoMenuPresentationItem.setState(gameBoyContext.videoPresentationEnabled);
+        videoMenuAutoFrameSkipModeItem.setState(gameBoyContext.videoFrameSkipAutoModeEnabled);
+        for (int i=0; i<NB_FRAME_SKIP_VALUES; i++) videoMenuFrameSkipMenuItems[i].setState(i==gameBoyContext.videoFrameSkip);
+    }
+    
     //------------------------------------------------------------------------------
     // Audio.
     //------------------------------------------------------------------------------
     private Menu audioMenu=new Menu("Audio");
     private MyCheckboxMenuItem audioMenuPresentationItem=new MyCheckboxMenuItem("Activate audio") {
         protected void processItemEvent(ItemEvent e) {
-        	gameBoyContext.audioEnable(!gameBoyContext.audioEnabled);
-            setState(gameBoyContext.audioEnabled);
-        }                
+        	gameBoyContext.audioBackEnd.enable(!gameBoyContext.audioBackEnd.isEnabled());
+        	audioMenuUpdate();
+        }
     };
     private MyCheckboxMenu audioMenuFrequencyMenu=new MyCheckboxMenu("Frequency") {
         public void onItemChanged(MyCheckboxMenuItem lastItem, MyCheckboxMenuItem newItem) {
-            gameBoyContext.audioSetFrequency(newItem.userValue);
+            gameBoyContext.audioBackEnd.setFrequency(newItem.userValue);
+            audioMenuUpdate();
         }
     };
     private MyCheckboxMenuItem audioMenuFrequencyMenuItems[]={
@@ -149,11 +183,19 @@ public class GameBoyMenu extends Menu {
     };
     private MyCheckboxMenuItem audioMenuRecordingItem=new MyCheckboxMenuItem("Activate recording") {
         protected void processItemEvent(ItemEvent e) {
-        	if (gameBoyContext.audioRecordingEnabled) gameBoyContext.audioStopRecording();
-        	else gameBoyContext.audioStartRecording();
-            setState(gameBoyContext.audioRecordingEnabled);
+        	if (gameBoyContext.audioBackEnd.isRecording()) gameBoyContext.audioBackEnd.stopRecording();
+        	else {
+        		gameBoyContext.audioStartRecording();
+        	}
+        	audioMenuUpdate();
         }        
     };    
+    
+    private void audioMenuUpdate() {
+        audioMenuPresentationItem.setState(gameBoyContext.audioBackEnd.isStarted());
+        audioMenuFrequencyMenu.setCurrentItemByValue(gameBoyContext.audioBackEnd.getFrequency());
+        audioMenuRecordingItem.setState(gameBoyContext.audioBackEnd.isRecording());
+    }
     
     //------------------------------------------------------------------------------
     // Joypad.
@@ -231,26 +273,9 @@ public class GameBoyMenu extends Menu {
     }
     
     private void updateMenu() {
-        globalMenuModelMenu.setCurrentItemByValue(gameBoyContext.gameBoy.getModel());
-        updatePowerMenu();
-
-        cartridgeMenuRemoveItem.setEnabled(gameBoyContext.gameBoy.isCartridgeInserted());
-        cartridgeMenuAutoRunItem.setState(gameBoyContext.cartridgeAutoRunFlag);
-        
-        videoMenuGenerationItem.setState(gameBoyContext.videoGenerationEnabled);
-        videoMenuPresentationItem.setState(gameBoyContext.videoPresentationEnabled);
-        videoMenuAutoFrameSkipModeItem.setState(gameBoyContext.videoFrameSkipAutoModeEnabled);
-        for (int i=0; i<NB_FRAME_SKIP_VALUES; i++) videoMenuFrameSkipMenuItems[i].setState(i==gameBoyContext.videoFrameSkip);
-
-        audioMenuPresentationItem.setState(gameBoyContext.audioLineStopped);
-        audioMenuFrequencyMenu.setCurrentItemByValue(gameBoyContext.audioSampleRate);
-        audioMenuRecordingItem.setState(gameBoyContext.audioRecordingEnabled);
-    }
-    
-    private void updatePowerMenu() {
-        boolean f=gameBoyContext.gameBoy.isPowered();
-        globalMenuPowerOnItem.setEnabled(!f);
-        globalMenuPowerOffItem.setEnabled(f);
-        globalMenuResetItem.setEnabled(f);        
+    	globalMenuUpdate();
+        cartridgeMenuUpdate();
+        videoMenuUpdate();
+        audioMenuUpdate();
     }
 }

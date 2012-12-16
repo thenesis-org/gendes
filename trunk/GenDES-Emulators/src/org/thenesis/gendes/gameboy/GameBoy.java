@@ -1111,16 +1111,16 @@ public final class GameBoy extends EmulationDevice {
     
     // Schedule the next audio update event.
     private void audioScheduleEvent() {
-    	if (!audioOutputEnabled || audioOutputBuffer==null) {
-    		// We can remove the event because it is only used to produce sound regularly.
-    		system.removeEvent(audioEvent);
-    	} else  {
-    		int r=audioOutputBufferLength-(audioOutputBufferPosition-audioOutputBufferOffset);
+    	if (audioOutputEnabled) {
+			int r=audioOutputBufferLength-(audioOutputBufferPosition-audioOutputBufferOffset);
 	        int t=audioSamplesToCycles(audioOutputFrequency, r);
 	        if (t<=0) t=1;
 	        if (clockDoubleSpeedFlag!=0) t<<=1;
 	        audioEvent.clockCycle=TimeStamp.add(clockCurrentCycle, t);
 	        clock.addEvent(audioEvent);    		
+    	} else  {
+    		// We can remove the event because it is only used to produce sound regularly.
+    		system.removeEvent(audioEvent);
     	}
     }
 
@@ -1176,34 +1176,35 @@ public final class GameBoy extends EmulationDevice {
             
             // Write a new sample.
             if (nextSampleFlag) {
-            	// Check buffer overflow and invoke the callback if necessary.                
-                if (audioOutputEnabled && audioOutputBuffer!=null) { // Test again because it could have been changed in the callback. 
-                    int left=0, right=0, t;
+                if (audioOutputEnabled) { 
+                    int left=0, right=0;
                     
                     // Panning.
-                    t=audioChannelToSOFlags;
-                    if ((t&0x01)!=0) right+=audioCh1Sample; if ((t&0x10)!=0) left+=audioCh1Sample;
-                    if ((t&0x02)!=0) right+=audioCh2Sample; if ((t&0x20)!=0) left+=audioCh2Sample;
-                 	if ((t&0x04)!=0) right+=audioCh3Sample; if ((t&0x40)!=0) left+=audioCh3Sample;
-                 	if ((t&0x08)!=0) right+=audioCh4Sample; if ((t&0x80)!=0) left+=audioCh4Sample;
+                    {
+                        int t=audioChannelToSOFlags;
+                        if ((t&0x01)!=0) right+=audioCh1Sample; if ((t&0x10)!=0) left+=audioCh1Sample;
+                        if ((t&0x02)!=0) right+=audioCh2Sample; if ((t&0x20)!=0) left+=audioCh2Sample;
+                     	if ((t&0x04)!=0) right+=audioCh3Sample; if ((t&0x40)!=0) left+=audioCh3Sample;
+                     	if ((t&0x08)!=0) right+=audioCh4Sample; if ((t&0x80)!=0) left+=audioCh4Sample;
+                    }
 
-                    // Volume.                    
-                    t=7*15*4*audioSampleCycles; // 7 for the volume, 15 for the number of intensity levels, 4 for the number of voices. 
-                    right=(audioSO1OutputLevel*right*127)/t;
-                    left=(audioSO2OutputLevel*left*127)/t;
+                    // Volume.
+                    {
+                        int t=7*15*4*audioSampleCycles; // 7 for the volume, 15 for the number of intensity levels, 4 for the number of voices. 
+                        right=(audioSO1OutputLevel*right*127)/t;
+                        left=(audioSO2OutputLevel*left*127)/t;
+                    }
 					
-//                    if (right<-128) { System.out.println("SATR: "+right); right=-128; }
-//                    if (right>127) { System.out.println("SATR: "+right); right=127; }
-//                    if (left<-128) { System.out.println("SATL: "+left); left=-128; }
-//                    if (left>127) { System.out.println("SATL: "+left); left=127; }
-
-                    // Write final sample value.
-                    t=(audioOutputBufferPosition<<1);
-                    audioOutputBuffer[t]=(byte)left; audioOutputBuffer[t+1]=(byte)right;
-                    audioOutputBufferPosition++;
-                    if ((audioOutputBufferPosition-audioOutputBufferOffset)>=audioOutputBufferLength) {
+                    // Write final sample value if there is room in the buffer. Note that we lose the first sample if the buffer has not been setup.
+                    int room = audioOutputBufferLength - (audioOutputBufferPosition-audioOutputBufferOffset);
+                    if (room>0) {
+	                    int t=(audioOutputBufferPosition<<1);
+	                    audioOutputBuffer[t]=(byte)left; audioOutputBuffer[t+1]=(byte)right;
+	                    audioOutputBufferPosition++;
+                    }
+                    // If the buffer is full, flush it.
+                    if (room<=1) {
                         if (globalListener!=null) globalListener.onEndOfAudioBuffer(globalEvent);
-                        audioOutputBufferPosition=audioOutputBufferOffset;                    
                     }
                 }
 
@@ -1211,7 +1212,6 @@ public final class GameBoy extends EmulationDevice {
                 audioCh1Sample=0; audioCh2Sample=0; audioCh3Sample=0; audioCh4Sample=0; // Reset sample values for each channel.
             }
         }
-        
     }
 
     private void audioSetNR50(int data) {

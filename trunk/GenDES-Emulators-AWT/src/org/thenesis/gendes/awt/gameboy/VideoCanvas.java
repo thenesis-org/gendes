@@ -115,7 +115,7 @@ public class VideoCanvas extends ViewCanvas {
             case KeyEvent.VK_MULTIPLY: switchZoomMode(); updateZoom(); break; // Zoom mode.
             }
             
-            if ((gameBoyContext!=null) && padChanged) {
+            if (gameBoyContext!=null && padChanged) {
                 synchronized(systemContext.emulationSystem) {
                     padKeys=gameBoyContext.gameBoy.getKeys()|padKeys;
                     gameBoyContext.gameBoy.setKeys(padKeys);
@@ -140,7 +140,7 @@ public class VideoCanvas extends ViewCanvas {
             case KeyEvent.VK_F: padKeys=GameBoy.PAD_SELECT; padChanged=true; break;
             }
             
-            if ((gameBoyContext!=null) && padChanged) {
+            if (gameBoyContext!=null && padChanged) {
                 synchronized(systemContext.emulationSystem) {
                     padKeys=gameBoyContext.gameBoy.getKeys()&~padKeys;
                     gameBoyContext.gameBoy.setKeys(padKeys);

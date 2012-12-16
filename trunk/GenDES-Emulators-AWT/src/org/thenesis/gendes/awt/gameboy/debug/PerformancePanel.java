@@ -137,13 +137,11 @@ public final class PerformancePanel extends DebugPanel {
         s.clearLine(py);
         s.print(0, py, "Audio"); py++;
         s.currentBackgroundColor=0; s.currentForegroundColor=1;
-        t=(int)(gameBoyContext.audioLineBufferLevel*100.0f);
+        t=(int)(gameBoyContext.audioBackEnd.getBufferLevel()*100.0f);
         s.print(0, py,  "Buffer:    "+t+"%");
-        if (gameBoyContext.audioSampleRate==0) t=0;
-        else t=(int)(1000.0f*gameBoyContext.audioLineBufferLevel*(float)gameBoyContext.audioLineBufferLength/(float)gameBoyContext.audioSampleRate);
-        s.print(16, py, "Latency:  "+t+" ms"); py++;
-        s.print(0, py,  "Underflow: "+gameBoyContext.audioLineUnderflow);        
-        s.print(16, py, "Overflow: "+gameBoyContext.audioLineOverflow); py++;
+        s.print(16, py, "Latency:  "+gameBoyContext.audioBackEnd.getLatency()+" ms"); py++;
+        s.print(0, py,  "Underflow: "+gameBoyContext.audioBackEnd.getUnderflowCounter());        
+        s.print(16, py, "Overflow: "+gameBoyContext.audioBackEnd.getOverflowCounter()); py++;
         
         DataBufferInt dataBuffer=(DataBufferInt)screenImg.getRaster().getDataBuffer();
         screen.drawScreen(dataBuffer.getData(), screenImg.getWidth(), screenImg.getHeight(), palette);
