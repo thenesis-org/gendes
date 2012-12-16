@@ -44,6 +44,7 @@ import org.thenesis.gendes.gameboy.GameBoy;
 //******************************************************************************
 // Main class.
 //******************************************************************************
+@SuppressWarnings("serial")
 public class GameBoyEmulatorApplet extends Applet {	
 	private SystemEmulationContext systemContext;
 	private GameBoyEmulationContext gameBoyContext;
@@ -153,7 +154,7 @@ public class GameBoyEmulatorApplet extends Applet {
         systemContext.emulationThread.start();
         
         gameBoyContext=new GameBoyEmulationContext(systemContext);
-        gameBoyContext.audioEnable(true);
+        gameBoyContext.audioBackEnd.enable(true);
         gameBoyContext.setModel(GameBoy.MODEL_GAME_BOY_COLOR);
         gameBoyContext.onCartridgeRemovedDispatcher.addListener(onCartridgeRemovedListener);
         gameBoyContext.onCartridgeInsertedDispatcher.addListener(onCartridgeInsertedListener);
@@ -476,7 +477,7 @@ public class GameBoyEmulatorApplet extends Applet {
     	} else {
     		try {
         		ByteArrayInputStream bais=new ByteArrayInputStream(data);
-    			gameBoyContext.cartridgeInsert(bais);
+    			gameBoyContext.cartridgeInsert(bais, cartridgeName);
             	setInfosMessage("Cartridge downloaded: "+cartridgeName);
     		} catch (IOException e) {
             	setInfosMessage("Cannot download cartridge: "+cartridgeName);

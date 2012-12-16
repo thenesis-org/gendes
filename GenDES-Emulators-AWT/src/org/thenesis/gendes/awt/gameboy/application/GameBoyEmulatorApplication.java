@@ -74,7 +74,9 @@ public class GameBoyEmulatorApplication {
         systemContext.emulationThread.start();
         
         gameBoyContext=new GameBoyEmulationContext(systemContext);
-        gameBoyContext.audioEnable(true);
+        gameBoyContext.audioBackEnd.enable(true);
+        // TODO: Move the next line in the GameBoyEmulationContext ?
+//        gameBoyContext.gameBoy.setAudioOutputBuffer(gameBoyContext.audioBackEnd.getOutputBufferLengthRemaining(), gameBoyContext.audioBackEnd.getOutputBufferLengthUsed(), gameBoyContext.audioBackEnd.getOutputBuffer());
         gameBoyContext.gameBoy.setModel(GameBoy.MODEL_GAME_BOY_COLOR);
         gameBoyContext.gameBoy.cpu.activateDebugMode(true);
         gameBoyContext.gameBoy.cpu.getBreakpoints().setMaxBreakpoints(256);

@@ -9,13 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.DataLine.Info;
-
 import org.thenesis.gendes.awt.Utilities;
 import org.thenesis.gendes.cpu_gameboy.CPU;
 import org.thenesis.gendes.cpu_gameboy.CPUEvent;
@@ -43,23 +36,7 @@ public final class GameBoyEmulationContext extends Context {
     public boolean cpuBreakOnIllegalOpcode=true;
     
     // Audio.
-    public boolean audioInitialized=false;
-    public boolean audioEnabled=false;
-    public int audioSampleRate=11025;
-    private int audioOutputBufferLength;
-    private byte audioOutputBuffer[];
-    // Audio presentation.
-    public boolean audioLineStopped, audioLineHalted;
-    public int audioLineBufferLength;
-    public int audioLineOverflow, audioLineUnderflow;
-    public float audioLineBufferLevel;
-    private AudioFormat audioLineFormat;
-    private Info audioLineInfo;    
-    private SourceDataLine audioLine;
-    // Audio recording.
-    public boolean audioRecordingEnabled=false;
-    private OutputStream audioRecordingOutputStream=null;
-    private final AudioFile audioFile=new AudioFile();
+    public AudioBackEnd audioBackEnd=new AudioBackEnd();
     
     // Video.
     public boolean videoGenerationEnabled=true;
@@ -82,7 +59,7 @@ public final class GameBoyEmulationContext extends Context {
     public volatile double videoFrameDuration, videoAverageFrameDuration;
     // Snapshots.
     public int videoSnapshotIndex=0;
-            
+
     // Events dispatcher.
     public final ContextEventDispatcher onResetDispatcher=new ContextEventDispatcher(); // Called after a reset.
     public final ContextEventDispatcher onEndOfFrameDispatcher=new ContextEventDispatcher(); // Called at the end of frame.
@@ -99,7 +76,10 @@ public final class GameBoyEmulationContext extends Context {
     
     private final GameBoyListener gameBoyListener=new GameBoyListener() {
         public void onEndOfVideoFrame(GameBoyEvent e) { videoUpdate(); }        
-        public void onEndOfAudioBuffer(GameBoyEvent e) { audioUpdate(); }        
+        public void onEndOfAudioBuffer(GameBoyEvent e) {
+        	audioBackEnd.update();
+    		gameBoy.setAudioOutputBuffer(audioBackEnd.getOutputBufferLengthRemaining(), audioBackEnd.getOutputBufferLengthUsed(), audioBackEnd.getOutputBuffer());
+        }        
         public void onBreak(GameBoyEvent e) { systemContext.breakEmulation(); }
     };
         
@@ -108,7 +88,7 @@ public final class GameBoyEmulationContext extends Context {
             videoBreakOnEndOfFrameFlag=false;
             gameBoy.cpu.setTraceMode(CPU.TRACE_MODE_RUN, cpuTraceInterrupts);
             
-            audioStop();
+            audioBackEnd.stop();
             
             if (videoInitialized && videoUpdateOnBreakFlag) {
                 int srcData[], dstData[];
@@ -123,7 +103,7 @@ public final class GameBoyEmulationContext extends Context {
     };
 
     private final ContextEventListener onResumeListener=new ContextEventListener() {
-        public void processEvent(ContextEvent ce) { audioStart(); }
+        public void processEvent(ContextEvent ce) { audioBackEnd.start(); }
     };
 
     //------------------------------------------------------------------------------
@@ -144,18 +124,23 @@ public final class GameBoyEmulationContext extends Context {
 	        systemContext.onResumeDispatcher.addListener(onResumeListener);
 	        systemContext.emulationSystem.addDevice(gameBoy);
 	        	        
+	        audioBackEnd.attach(systemContext.emulationSystem, systemContext.emulationThread);
+//	        audioBackEnd.reset();
+	        
 	        videoInitialize();
         }
     }
     
     public void detach() {
-    	audioStop();
+    	audioBackEnd.stop();
     	switchPower(false);
     	cartridgeRemove();    	
         detachAll();
         synchronized (systemContext.emulationSystem) {
 	        videoFinalize();
-	        audioFinalize();
+	        
+	        gameBoy.setAudioOutputBuffer(0, 0, null);
+	        audioBackEnd.finalize();
 	        
 	        onResetDispatcher.removeAllListener();
 	        onEndOfFrameDispatcher.removeAllListener();
@@ -223,193 +208,13 @@ public final class GameBoyEmulationContext extends Context {
     //------------------------------------------------------------------------------
     // Audio.
     //------------------------------------------------------------------------------
-    private void audioInitialize() {
-    	synchronized (systemContext.emulationSystem) {
-	        audioOutputBufferLength=audioSampleRate/10;
-	        audioOutputBuffer=new byte[2*audioOutputBufferLength];
-	        
-    		audioLineBufferLength=2*audioOutputBufferLength;
-	        audioLineFormat=new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, audioSampleRate, 8, 2, 2, audioSampleRate, false);
-	        audioLineInfo=new DataLine.Info(SourceDataLine.class, audioLineFormat, audioLineBufferLength<<1);
-	        try {
-	            audioLine=(SourceDataLine)AudioSystem.getLine(audioLineInfo);
-	            audioLine.open(audioLineFormat, audioLineBufferLength<<1);
-	            gameBoy.setAudioOutputFrequency(audioSampleRate);
-	            gameBoy.setAudioOutputBuffer(0, audioOutputBufferLength, audioOutputBuffer);
-	            audioInitialized=true;
-		        audioLineStopped=systemContext.emulationThread.isPaused();
-		        audioLineHalted=true;
-		        audioLineOverflow=0; audioLineUnderflow=0;
-		        audioLineBufferLevel=0.0f;
-		        if (!audioLineStopped) audioLine.start();
-	        } catch (LineUnavailableException e) {
-//	            System.out.println("Cannot open an audio line.");
-	            audioFinalize();
-	        }
-    	}
-    }
-    
-    private void audioFinalize() {        
-    	synchronized (systemContext.emulationSystem) {
-	    	audioStopRecording();
-	    	audioInitialized=false;
-	    	audioLineStopped=true;
-	        audioLineHalted=true;
-	        gameBoy.setAudioOutputBuffer(0, 0, null);
-	        audioOutputBuffer=null;
-	        audioLineFormat=null;
-	        audioLineInfo=null;
-	        if (audioLine!=null) {
-	        	audioLine.stop();
-	        	audioLine.flush();
-	            audioLine.close();
-	            audioLine=null;
-	        }
-	        audioLineOverflow=0; audioLineUnderflow=0;
-	        audioLineBufferLevel=0.0f;
-    	}
-    }
-    
-    private void audioReset() {
-    	synchronized (systemContext.emulationSystem) {
-    		if (audioEnabled) {
-	    		audioFinalize();
-	    		audioInitialize();
-    		}
-    	}
-    }
-    
-    private void audioUpdate() {
-        if (!audioInitialized || audioLineStopped) return;
-    	int l=audioOutputBufferLength, la=audioLine.available()>>1, lu=l; // Length generated (l), available (la), used (lu) and remaining (lr).
-    
-    	audioLineBufferLevel=(float)(audioLineBufferLength-la)/(float)audioLineBufferLength;
-    	if (!audioLine.isRunning() && !audioLineHalted) audioLineUnderflow=(audioLineUnderflow+1)&0x7fffffff;
-        audioLineHalted=false;
-        
-    	if (la==0) audioLineOverflow=(audioLineOverflow+1)&0x7fffffff;
-    	else if (l>la) lu=la;
-
-    	// Record.
-        if (audioRecordingEnabled) {
-        	if (audioFile.write(0, lu<<1, audioOutputBuffer)) audioStopRecording();
-        }
-        
-        // Play.
-		if (la!=0) audioLine.write(audioOutputBuffer, 0, lu<<1);
-		
-        // Shift the buffer if necessary.
-		int lr=l-lu;
-        if (lr>0) {
-        	int lr2=lr<<1, lu2=lu<<1;
-    		for (int i=0; i<lr2; i++) audioOutputBuffer[i]=audioOutputBuffer[lu2+i]; // Shift. TODO: use a circular buffer.
-        }
-        
-        // Set the buffer.
-		gameBoy.setAudioOutputBuffer(lr, lu, audioOutputBuffer);
-    }
-    
-    public void audioEnable(boolean flag) {
-        synchronized (systemContext.emulationSystem) {
-	    	if (flag) {
-	    		if (!audioEnabled) { audioInitialize(); audioEnabled=true; }
-	    	} else {
-	    		if (audioEnabled) { audioFinalize(); audioEnabled=false; }
-	    	}
-        }
-    }
-    
-    public void audioSetFrequency(int frequency) {
-        switch (frequency) {
-        case 11025: case 22050: case 44100: break;
-        default: return;
-        }
-        
-        synchronized (systemContext.emulationSystem) {	        
-        	audioSampleRate=frequency;
-        	audioReset();
-        }
-    }
-    
-    public void audioStart() {
-    	synchronized (systemContext.emulationSystem) {
-    		if (audioLineStopped && audioInitialized) {
-	    		audioLineStopped=false;
-	    		audioLine.start();
-    		}
-    	}
-    }
-    
-    public void audioStop() {
-    	synchronized (systemContext.emulationSystem) {
-    		if (!audioLineStopped && audioInitialized) {
-	            audioLineStopped=true;
-	    		audioLine.stop();
-    		}
-    	}
-    }
-    
     public void audioStartRecording() {
-    	synchronized (systemContext.emulationSystem) {
-        	if (!audioInitialized) return;
-        	
-	        CartridgeInfos ci=gameBoy.getCartridgeInfos();
-	        if ((cartridgeFilename!=null) && ci.headerValid) {
-	        	String audioFilename=Utilities.replaceFileExtension(cartridgeFilename, ".au");        	
-	            try {
-	            	File f=new File(audioFilename);
-	            	audioRecordingOutputStream=new FileOutputStream(f);
-	            	audioFile.start(audioRecordingOutputStream, audioSampleRate);
-	            } catch (IOException e) {
-//	                System.out.println("Cannot open a file for audio recording.");
-	                return;
-	            }
-	        	audioRecordingEnabled=true;
-	        }
-    	}
+        CartridgeInfos ci=gameBoy.getCartridgeInfos();
+        if ((cartridgeFilename!=null) && ci.headerValid) {
+        	audioBackEnd.startRecording(cartridgeFilename);
+        }
     }
     
-    public void audioStopRecording() {
-    	synchronized (systemContext.emulationSystem) {
-        	if (!audioInitialized || !audioRecordingEnabled) return;
-        	
-	        try {
-	        	audioFile.stop();
-	        	audioRecordingOutputStream.close();
-	        } catch (IOException e) {}
-	        audioRecordingOutputStream=null;
-	        audioRecordingEnabled=false;
-    	}
-    }
-/*
-    public synchronized void update(int length, byte data[]) {
-        if (!initialized) return;
-    	
-        long currentTimer=timer.getTimer();
-        float dt=(float)timer.computeDifference(lastUpdateTimer, currentTimer);
-       	int la=line.available()>>1, lr=lineBufferLength-la; // Length available (la) and remaining (lr).
-
-		lastUpdateInputSamples+=length;            
-        if (dt>=updatePeriod) {
-            inputRate=(lastUpdateInputSamples)/dt;
-            lineRate=(lastUpdateOutputSamples-lr)/dt;
-            lastUpdateTimer=currentTimer;
-            lastUpdateInputSamples=0;
-            lastUpdateOutputSamples=lr;
-        }
-        
-    	lineBufferLevel=(float)(lineBufferLength-la)/(float)lineBufferLength;
-    	if (!line.isRunning()) lineUnderflow=(lineUnderflow+1)&0x7fffffff;            
-    	if (la<length) {
-    		lineOverflow=(lineOverflow+1)&0x7fffffff;
-    	} else {
-    		lastUpdateOutputSamples+=length;
-    		line.write(buffer, 0, length<<1);
-    	}
-
-    }
-
- */
     //------------------------------------------------------------------------------
     // Video.
     //------------------------------------------------------------------------------
@@ -506,46 +311,18 @@ public final class GameBoyEmulationContext extends Context {
     // Cartridge.
     //------------------------------------------------------------------------------
     public void cartridgeInsert(String filename) throws IOException {
-        synchronized (systemContext.emulationSystem) {
-        	boolean reset=false;
-            if (gameBoy.isPowered()) { reset=true; gameBoy.switchPower(false); }
-            if (gameBoy.isCartridgeInserted()) onCartridgeRemovedDispatcher.dispatch(null);
-            cartridgeFilename=null; // Must be after the call to onCartridgeRemovedDispatcher.dispatch() !
-            
-            try { 
-                FileInputStream fis=new FileInputStream(new File(filename));
-                if (gameBoy.setCartridge(fis)) { fis.close(); throw new IOException(); }
-                fis.close();
-                cartridgeFilename=filename;
-            } finally {
-                if (gameBoy.isCartridgeInserted()) onCartridgeInsertedDispatcher.dispatch(null);
-                if (cartridgeAutoRunFlag) { reset=true; gameBoy.switchPower(true); }
-                if (reset) onResetDispatcher.dispatch(null);
-            }
-        }
+       	FileInputStream fis=new FileInputStream(new File(filename));
+       	cartridgeInsert(fis, filename);
+        fis.close();
     }
         
     public void cartridgeInsert(File f) throws IOException {
-        synchronized (systemContext.emulationSystem) {
-        	boolean reset=false;
-            if (gameBoy.isPowered()) { reset=true; gameBoy.switchPower(false); }
-            if (gameBoy.isCartridgeInserted()) onCartridgeRemovedDispatcher.dispatch(null);
-            cartridgeFilename=null; // Must be after the call to onCartridgeRemovedDispatcher.dispatch() !
-            
-            try {
-                FileInputStream fis=new FileInputStream(f);
-                if (gameBoy.setCartridge(fis)) { fis.close(); throw new IOException(); }
-                fis.close();
-                cartridgeFilename=f.getPath();
-            } finally {
-                if (gameBoy.isCartridgeInserted()) onCartridgeInsertedDispatcher.dispatch(null);
-                if (cartridgeAutoRunFlag) { reset=true; gameBoy.switchPower(true); }
-                if (reset) onResetDispatcher.dispatch(null);            	
-            }
-        }
+        FileInputStream fis=new FileInputStream(f);
+       	cartridgeInsert(fis, f.getPath());
+        fis.close();
     }
     
-    public void cartridgeInsert(InputStream fis) throws IOException {
+    public void cartridgeInsert(InputStream fis, String fileName) throws IOException {
         synchronized (systemContext.emulationSystem) {
         	boolean reset=false;
             if (gameBoy.isPowered()) { reset=true; gameBoy.switchPower(false); }
@@ -553,12 +330,14 @@ public final class GameBoyEmulationContext extends Context {
             cartridgeFilename=null; // Must be after the call to onCartridgeRemovedDispatcher.dispatch() !
             
             try {
-            	gameBoy.setCartridge(fis);
+            	if (gameBoy.setCartridge(fis)) { throw new IOException(); }
             } finally {
                 if (gameBoy.isCartridgeInserted()) onCartridgeInsertedDispatcher.dispatch(null);
                 if (cartridgeAutoRunFlag) { reset=true; gameBoy.switchPower(true); }
                 if (reset) onResetDispatcher.dispatch(null);            	
             }
+
+            cartridgeFilename=fileName;
         }
     }
     
