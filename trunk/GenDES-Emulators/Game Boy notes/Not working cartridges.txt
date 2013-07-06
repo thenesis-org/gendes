@@ -13,6 +13,10 @@ This could be solved by simulating remanence.
 *Lock early in game. Does not happen when sound is desactivated in the game options.
 This is due to the video timings which are not 100% accurate.
 Since the game sound processing shift other processings, this explains why the problem does not happen when sound is disabled.
+->The loop at 0x169c never exit
+->And there is a sound interrupt between $1653 and $1657
+->And the routine waits that the current line goes beyond 159.
+-> But it never happens because the sound interrupt make it miss this hardware event.
 
 -"Magical Drop (U) [C][!].gbc"
 *Intro does not work. According to GNUBOY, this is due to the fact that GDMA should consume CPU cycles.
