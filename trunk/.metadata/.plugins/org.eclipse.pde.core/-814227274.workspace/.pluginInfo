@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map>
-	<bundle bundleID="432" class="org.thenesis.emulation.eclipse.gameboy.GameBoyPlugin" localization="plugin" name="%Plugin.name" project="GenDES-Emulators-Eclipse" provider="%Plugin.providerName">
-		<library name="src/"/>
-		<library name="."/>
-	</bundle>
-</map>
