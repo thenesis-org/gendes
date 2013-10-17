@@ -282,12 +282,10 @@ public class GameBoyEmulatorApplet extends Applet {
 	        add(serverAddressNameLabel, c);
 	        c.gridx=1; c.gridy=gridy; c.gridwidth=2; c.gridheight=1;
 	        c.weightx=1.0; c.weighty=0.0; c.fill=GridBagConstraints.BOTH; c.anchor=GridBagConstraints.NORTHWEST;
-//	        serverAddressTextField=new TextField("http://www.thenesis.com/downloads/emulation");
 //	        serverAddressTextField=new TextField("http://localhost/gbroms");
-//	        serverAddressTextField=new TextField("http://thenesis.free.fr/gbroms");
 //	        String serverAddress=getParameter("serverAddress");
-//	        if (serverAddress==null) serverAddress="http://sites.google.com/site/thenesisgendes/game-boy-emulator";
-	        String serverAddress="http://sites.google.com/site/thenesisgendes/game-boy-emulator";
+//	        if (serverAddress==null) serverAddress="https://sites.google.com/site/thenesisgendes/game-boy-emulator";
+	        String serverAddress="https://sites.google.com/site/thenesisgendes/game-boy-emulator";
 	        serverAddressTextField=new TextField(serverAddress);
 	        add(serverAddressTextField, c);
 	        gridy++;
