@@ -77,8 +77,10 @@ public class GameBoyEmulatorApplet extends Applet {
 	private Button loadButton, removeButton;
 	private TextField cartridgeNameTextField;
 	private String cartridgeName="";
+	private String cartridgeFileName;
 	// Server.
 	private Button updateButton, downloadButton, cancelButton;
+	private String serverAddress="https://sites.google.com/site/thenesisgendes/game-boy-emulator";
 	private TextField serverAddressTextField;
 	private List backupsList;
 	// Infos label.
@@ -92,12 +94,29 @@ public class GameBoyEmulatorApplet extends Applet {
     public static void main(String[] args) {
     	GameBoyEmulatorApplet applet=null;
         try {
-            applet=new GameBoyEmulatorApplet();
+        	applet=new GameBoyEmulatorApplet();
             applet.appletFlag=false;
+
+            // Check arguments.
+        	for (int i=0; i<args.length; ) {
+            	String a=args[i];
+            	if (a.equals("--serverAddress")) {
+            		// Server address.
+            		i++;
+            		if (i>=args.length) break;
+            		applet.serverAddress=args[i];
+            		i++;
+            	} else {
+            		// Cartridge to load.
+            		applet.cartridgeFileName=args[i];
+            		// Do not check remaining arguments.
+            		break;
+            	}
+            }
+
             applet.init();
             applet.start();
-
-            if (args.length==1) applet.loadCartridge(args[0]);
+            if (applet.cartridgeFileName!=null) applet.loadCartridge(applet.cartridgeFileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,6 +133,11 @@ public class GameBoyEmulatorApplet extends Applet {
     //------------------------------------------------------------------------------
     public void init() {
         try {
+        	if (appletFlag) {
+	        	String a=getParameter("serverAddress");
+	        	if (a!=null) serverAddress=a;
+        	}
+        	
             emulationInitialize();
             guiInitialize();
         } catch (Exception e) {
@@ -282,10 +306,6 @@ public class GameBoyEmulatorApplet extends Applet {
 	        add(serverAddressNameLabel, c);
 	        c.gridx=1; c.gridy=gridy; c.gridwidth=2; c.gridheight=1;
 	        c.weightx=1.0; c.weighty=0.0; c.fill=GridBagConstraints.BOTH; c.anchor=GridBagConstraints.NORTHWEST;
-//	        serverAddressTextField=new TextField("http://localhost/gbroms");
-//	        String serverAddress=getParameter("serverAddress");
-//	        if (serverAddress==null) serverAddress="https://sites.google.com/site/thenesisgendes/game-boy-emulator";
-	        String serverAddress="https://sites.google.com/site/thenesisgendes/game-boy-emulator";
 	        serverAddressTextField=new TextField(serverAddress);
 	        add(serverAddressTextField, c);
 	        gridy++;
