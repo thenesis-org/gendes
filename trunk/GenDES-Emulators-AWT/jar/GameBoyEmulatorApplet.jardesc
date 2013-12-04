@@ -16,8 +16,8 @@
         <javaElement handleIdentifier="=GenDES-Core/src\/core"/>
         <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.contexts"/>
         <javaElement handleIdentifier="=GenDES-Emulators/src&lt;org.thenesis.gendes.gameboy"/>
-        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt"/>
         <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.system"/>
+        <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt"/>
         <javaElement handleIdentifier="=GenDES-Emulators-AWT/src&lt;org.thenesis.gendes.awt.gameboy"/>
     </selectedElements>
 </jardesc>

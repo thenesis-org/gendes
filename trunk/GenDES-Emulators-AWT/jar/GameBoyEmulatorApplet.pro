@@ -1,7 +1,7 @@
 -injars GameBoyEmulatorApplet.jar
 -outjars GameBoyEmulatorApplet_.jar
 
--libraryjars 'C:\Program Files (x86)\Java\jre6\lib\rt.jar'
+-libraryjars 'C:\Program Files (x86)\Java\jre7\lib\rt.jar'
 
 -optimizationpasses 3
 
@@ -81,6 +81,30 @@
     public static double hypot(double,double);
     public static double expm1(double);
     public static double log1p(double);
+}
+
+# Remove debugging - Throwable_printStackTrace calls. Remove all invocations of
+# Throwable.printStackTrace().
+-assumenosideeffects public class java.lang.Throwable {
+    public void printStackTrace();
+}
+
+# Remove debugging - Thread_dumpStack calls. Remove all invocations of
+# Thread.dumpStack().
+-assumenosideeffects public class java.lang.Thread {
+    public static void dumpStack();
+}
+
+# Remove debugging - All logging API calls. Remove all invocations of the
+# logging API whose return values are not used.
+-assumenosideeffects public class java.util.logging.* {
+    <methods>;
+}
+
+# Remove debugging - All Log4j API calls. Remove all invocations of the
+# Log4j API whose return values are not used.
+-assumenosideeffects public class org.apache.log4j.** {
+    <methods>;
 }
 
 # Remove - Number method calls. Remove all invocations of Number
@@ -306,28 +330,4 @@
     public int length();
     public java.lang.String substring(int);
     public java.lang.String substring(int,int);
-}
-
-# Remove debugging - Throwable_printStackTrace calls. Remove all invocations of
-# Throwable.printStackTrace().
--assumenosideeffects public class java.lang.Throwable {
-    public void printStackTrace();
-}
-
-# Remove debugging - Thread_dumpStack calls. Remove all invocations of
-# Thread.dumpStack().
--assumenosideeffects public class java.lang.Thread {
-    public static void dumpStack();
-}
-
-# Remove debugging - All logging API calls. Remove all invocations of the
-# logging API whose return values are not used.
--assumenosideeffects public class java.util.logging.* {
-    <methods>;
-}
-
-# Remove debugging - All Log4j API calls. Remove all invocations of the
-# Log4j API whose return values are not used.
--assumenosideeffects public class org.apache.log4j.** {
-    <methods>;
 }
