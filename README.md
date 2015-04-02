@@ -1,4 +1,4 @@
-# gendes
+# GenDES
 
 GenDES allows to easily, accurately and efficiently simulate any kind of event based phenomenon.
 
