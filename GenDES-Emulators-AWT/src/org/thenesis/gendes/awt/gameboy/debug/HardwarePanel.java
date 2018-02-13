@@ -2,7 +2,6 @@ package org.thenesis.gendes.awt.gameboy.debug;
 
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -17,6 +16,7 @@ import org.thenesis.gendes.contexts.ContextEventListener;
 import org.thenesis.gendes.contexts.ContextNode;
 import org.thenesis.gendes.contexts.GameBoyEmulationContext;
 import org.thenesis.gendes.contexts.SystemEmulationContext;
+import org.thenesis.gendes.debug.Point;
 import org.thenesis.gendes.gameboy.GameBoyHardwareScreen;
 import org.thenesis.gendes.gameboy.GameBoyHardwareScreen2;
 

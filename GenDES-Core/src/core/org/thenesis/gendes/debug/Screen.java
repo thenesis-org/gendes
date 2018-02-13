@@ -1,7 +1,5 @@
 package org.thenesis.gendes.debug;
 
-import java.awt.Point;
-
 import org.thenesis.gendes.FastString;
 
 public class Screen {
@@ -810,4 +808,7 @@ public class Screen {
     private static final int FONTS_WIDTH[]={ 8, 8, 16 };
     private static final int FONTS_HEIGHT[]={ 8, 16, 16 };
     private static final char FONTS_DATA[][]={ font8x8, font8x16 };
+
 }
+
+

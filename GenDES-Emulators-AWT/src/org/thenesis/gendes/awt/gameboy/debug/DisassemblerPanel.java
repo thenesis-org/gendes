@@ -3,7 +3,6 @@ package org.thenesis.gendes.awt.gameboy.debug;
 
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -24,6 +23,7 @@ import org.thenesis.gendes.contexts.SystemEmulationContext;
 import org.thenesis.gendes.cpu_gameboy.CPU;
 import org.thenesis.gendes.cpu_gameboy.Disassembler;
 import org.thenesis.gendes.debug.DisassemblerScreen;
+import org.thenesis.gendes.debug.Point;
 
 
 //******************************************************************************

@@ -3,7 +3,6 @@ package org.thenesis.gendes.awt.gameboy.debug;
 
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -26,6 +25,7 @@ import org.thenesis.gendes.contexts.ContextNode;
 import org.thenesis.gendes.contexts.GameBoyEmulationContext;
 import org.thenesis.gendes.contexts.SystemEmulationContext;
 import org.thenesis.gendes.debug.MemoryScreen;
+import org.thenesis.gendes.debug.Point;
 import org.thenesis.gendes.gameboy.GameBoy;
 
 

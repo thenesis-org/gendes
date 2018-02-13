@@ -314,7 +314,7 @@ public class DisassemblerView extends ViewPart {
     // DO NOT call a SWT routine inside an AWT routine !!!
     class ScreenCanvas extends java.awt.Canvas {
 		private boolean backgroundDirty=true, screenDirty=true, foregroundDirty=true;
-        private final java.awt.Point mouseCharacter=new java.awt.Point();
+        private final org.thenesis.gendes.debug.Point mouseCharacter=new org.thenesis.gendes.debug.Point();
     	protected BufferedImage screenImg;
 
         ScreenCanvas() {
@@ -398,7 +398,7 @@ public class DisassemblerView extends ViewPart {
             screenImg=new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
         }
         
-        private boolean positionToCharacter(int x, int y, java.awt.Point c) {
+        private boolean positionToCharacter(int x, int y, org.thenesis.gendes.debug.Point c) {
             int cx=x/disassemblerScreen.getFontWidth(), cy=y/disassemblerScreen.getFontHeight();
             if (disassemblerScreen.isCharacterVisible(cx, cy)) {
                 c.x=cx; c.y=cy;
