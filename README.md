@@ -6,7 +6,7 @@ A full Game Boy emulator has been done and can be found in the [release](https:/
 
 GenDES provides generic debugging features which can be useful for game developpers and the emulation ecosystem.
 
-GitHub project page: https://github.com/thenesis-org/gendes
+GitHub project page: [](https://github.com/thenesis-org/gendes)
 
 ### Requirements
 - Java ME: CLDC/MIDP or CDC
