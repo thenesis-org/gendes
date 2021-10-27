@@ -177,17 +177,17 @@ public class GameboyApplication implements GameBoyListener {
 		if (frameCount % 20 == 0) {
 			ansiConsole.clear();
 			ansiConsole.eraseScreen();
-			int scale = 2;
+			int scale = 1;
 			int height = GameBoy.SCREEN_HEIGHT / scale;
 			int width = GameBoy.SCREEN_WIDTH / scale;
-			for (int j = 0; j < height - 1; j++) {
-				ansiConsole.cursor(j + 1, 1); // 1-based
+			for (int j = 0; j < height - 1; j = j + 2) {
+				ansiConsole.cursor(j/2 + 1, 1); // 1-based
 				for (int i = 0; i < width; i++) {
-					int index1 = (j * GameBoy.SCREEN_WIDTH + i) * scale;
-					int argb1 = videoOutputImages[index1];
-					int index2 = ((j + 1) * GameBoy.SCREEN_WIDTH + i) * scale;
-					int argb2 = videoOutputImages[index2];
-					ansiConsole.fgRgb(argb1).bgRgb(argb2).a('\u2594');
+					int topPixelIndex = (j * GameBoy.SCREEN_WIDTH + i) * scale;
+					int topPixelArgb = videoOutputImages[topPixelIndex];
+					int bottomPixelIndex = ((j + 1) * GameBoy.SCREEN_WIDTH + i) * scale;
+					int bottomPixelArgb = videoOutputImages[bottomPixelIndex];
+					ansiConsole.fgRgb(topPixelArgb).bgRgb(bottomPixelArgb).a('\u2594'); // Top half block
 //    			if ((argb & 0xFFFFFF) != 0) {
 //    				ansiConsole.bg(Color.WHITE).a(' ');
 //    			} else {
@@ -199,8 +199,6 @@ public class GameboyApplication implements GameBoyListener {
 			ansiConsole.cursor(1, 1).reset().a(frameCount);
 			System.out.println(ansiConsole);
 		}
-
-		//System.out.println(ansiConsole.eraseScreen().fg(Ansi.Color.RED).a("Hello").fg(Ansi.Color.RED).a(" World").reset());
 
 		try {
 			Thread.sleep((long) (1000 / FPS));
